@@ -36,7 +36,8 @@ class PokemonDetailFragment : Fragment() {
     }
 
     private fun callApi(){
-        Singletons.pokeApi.getPokemonDetail("1").enqueue(object : Callback<PokemonDetailResponse>{
+        val id = arguments?.getInt("pokemonId") ?: -1
+        Singletons.pokeApi.getPokemonDetail(id).enqueue(object : Callback<PokemonDetailResponse>{
             override fun onResponse(
                     call: Call<PokemonDetailResponse>,
                     response: Response<PokemonDetailResponse>) {
