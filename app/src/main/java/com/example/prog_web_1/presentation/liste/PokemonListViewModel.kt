@@ -9,17 +9,20 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class PokemonListViewModel : ViewModel(){
-    val pokeList : MutableLiveData<List<Pokemon>> = MutableLiveData()
+    val pokeList : MutableLiveData<PokemonModel> = MutableLiveData()
 
     init {
         callApi()
     }
 
     private fun callApi() {
+        pokeList. value = PokemonLoader
+
         Singletons.pokeApi.getPokemonList().enqueue(object : Callback<PokemonListResponse>{
             override fun onFailure(
                     call: Call<PokemonListResponse>,
                     t: Throwable) {
+                pokeList. value = PokemonError
             }
 
             override fun onResponse(
@@ -27,10 +30,14 @@ class PokemonListViewModel : ViewModel(){
                     response: Response<PokemonListResponse>) {
                 if(response.isSuccessful && response.body() != null){
                     val pokemonResponse = response.body()!!
-                    pokeList. value = pokemonResponse.results
+                    pokeList. value = PokemonSuccess(pokemonResponse.results)
+                }
+                else{
+                    pokeList. value = PokemonError
                 }
             }
 
-        })    }
+        })
+    }
 
 }
